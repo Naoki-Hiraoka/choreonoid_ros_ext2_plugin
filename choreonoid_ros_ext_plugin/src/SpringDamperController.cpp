@@ -32,7 +32,7 @@ public:
         cnoid::LinkPtr link = io->body()->link(linkName);
         if(link){
           targets.emplace_back(link, pgain, dgain);
-          link->setActuationMode(Link::JOINT_TORQUE);
+          link->setActuationMode(Link::JointTorque);
           io->enableOutput(link);
           io->enableInput(link, JOINT_DISPLACEMENT | JOINT_VELOCITY);
           io->os() << "[SpringDamperController] joint: \"" << linkName <<"\" P: " << pgain << " dgain:  " << dgain << std::endl;

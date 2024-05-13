@@ -18,6 +18,7 @@ items:
           name: "SR1"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/SR1/SR1.body"
             currentBaseLink: "WAIST"
@@ -27,33 +28,45 @@ items:
               0, 1, 0, 
               0, 0, 1 ]
             jointPositions: [ 
-               0.000000, -0.036652,  0.000000,  0.078540, -0.041888,  0.000000,  0.174533, -0.003491,  0.000000, 
-              -1.570796,  0.000000,  0.000000,  0.000000,  0.000000, -0.036652,  0.000000,  0.078540, -0.041888, 
-               0.000000,  0.174533, -0.003491,  0.000000, -1.570796,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000 ]
+               0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0 ]
             initialRootPosition: [ 0, 0, 0.7135 ]
             initialRootAttitude: [ 
               1, 0, 0, 
               0, 1, 0, 
               0, 0, 1 ]
             initialJointPositions: [ 
-               0.000000, -0.036652,  0.000000,  0.078540, -0.041888,  0.000000,  0.174533, -0.003491,  0.000000, 
-              -1.570796,  0.000000,  0.000000,  0.000000,  0.000000, -0.036652,  0.000000,  0.078540, -0.041888, 
-               0.000000,  0.174533, -0.003491,  0.000000, -1.570796,  0.000000,  0.000000,  0.000000,  0.000000, 
-               0.000000,  0.000000 ]
+               0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0 ]
             zmp: [ 0, 0, 0 ]
             selfCollisionDetection: false
             isEditable: true
-        -
-          id: 3
-          name: "ClockPublisher"
-          plugin: ROSExt
-          class: ClockPublisherItem
+          children:
+            -
+              id: 3
+              name: "Crane"
+              plugin: ROSExt
+              class: CraneItem
+              data:
+                linkName: "CHEST"
+                localPos: [0,0,0]
+                maxHeight: 1.7
+                minHeight: 0.5
+                upVelocity: 0.1
+                downVelocity: 0.03
+                pgain: 25000.0
+                dgain: 100.0
+                dgainR: 100.0
         - 
           id: 4
           name: "Floor"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/misc/floor.body"
             currentBaseLink: "BASE"
@@ -79,19 +92,3 @@ items:
           data: 
             realtimeSync: true
             recording: "full"
-views: 
-  "Items": 
-    selected: [  ]
-    checked: [ 2, 4 ]
-    expanded: [ 1, 2, 3 ]
-  "Scene": 
-    floorGrid: false
-toolbars: 
-  "TimeBar": 
-    minTime: 0
-    maxTime: 15
-    frameRate: 500
-    currentTime: 0
-    speedScale: 1
-    syncToOngoingUpdates: true
-    autoExpansion: true

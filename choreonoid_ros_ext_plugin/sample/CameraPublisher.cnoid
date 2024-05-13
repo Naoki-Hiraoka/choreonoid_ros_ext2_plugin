@@ -19,6 +19,7 @@ items:
           name: "AizuSpider"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/AizuSpider/AizuSpiderSS.body"
             currentBaseLink: "CHASSIS"
@@ -45,17 +46,17 @@ items:
           children: 
             - 
               id: 3
-              name: "OdometryPublisher"
+              name: "CameraPublisher"
               plugin: ROSExt
-              class: OdometryPublisherItem
+              class: CameraPublisherItem
               data:
-                targetName: FRONT_CAMERA
-                publishRate: 100.0
+                cameraName: FRONT_CAMERA
         - 
           id: 4
           name: "Floor"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/misc/floor.body"
             currentBaseLink: "BASE"
@@ -103,10 +104,3 @@ items:
                 enableHeadLight: true
                 enableAdditionalLights: true
                 antiAliasing: false
-views: 
-  "Items": 
-    selected: [  ]
-    checked: [ 2, 4 ]
-    expanded: [ 1, 2, 5 ]
-  "Scene": 
-    floorGrid: false

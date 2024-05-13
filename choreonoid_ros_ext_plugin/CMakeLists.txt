@@ -43,7 +43,7 @@ set_target_properties(CnoidROSExtPlugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CH
 add_library(SpringDamperController SHARED src/SpringDamperController.cpp)
 target_link_libraries(SpringDamperController
   ${catkin_LIBRARIES}
-  ${CHOREONOID_LIBRARIES_ABS}
+  ${CHOREONOID_BODY_PLUGIN_LIBRARIES}
   )
 set_target_properties(SpringDamperController PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CHOREONOID_PLUGIN_DIR}/simplecontroller

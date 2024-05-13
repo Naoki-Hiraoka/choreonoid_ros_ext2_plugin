@@ -84,7 +84,7 @@ namespace cnoid {
       if(this->childFrameId_.size()!=0) odom.child_frame_id = this->childFrameId_;
       else odom.child_frame_id = this->sensor_->name();
 
-      cnoid::Position pose = this->sensor_->link()->T() * this->sensor_->T_local();
+      cnoid::Isometry3 pose = this->sensor_->link()->T() * this->sensor_->T_local();
       // Rotate sensor->localR 180[deg] because OpenHRP3 camera -Z axis equals to ROS camera Z axis
       // http://www.openrtp.jp/openhrp3/jp/create_model.html
       pose.linear() = (pose.linear() * cnoid::AngleAxis(M_PI, cnoid::Vector3::UnitX())).eval();

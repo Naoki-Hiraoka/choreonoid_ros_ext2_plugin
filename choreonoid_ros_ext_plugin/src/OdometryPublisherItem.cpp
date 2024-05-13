@@ -91,7 +91,7 @@ namespace cnoid {
       if(this->childFrameId_.size()!=0) odom.child_frame_id = this->childFrameId_;
       else odom.child_frame_id = this->targetName_;
 
-      cnoid::Position pose;
+      cnoid::Isometry3 pose;
       if(this->link_){
         pose = this->link_->T();
       }else{

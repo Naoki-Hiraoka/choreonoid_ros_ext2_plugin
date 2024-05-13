@@ -35,11 +35,11 @@ namespace cnoid {
     cnoid::BodyItemPtr bodyItem_;
     cnoid::SimulatorItem* currentSimulatorItem_;
     cnoid::ScopedConnectionSet currentSimulatorItemConnections_;
-    cnoid::Position targetT_;
+    cnoid::Isometry3 targetT_;
     cnoid::Vector6 prevError_;
 
     std::string linkName_;
-    cnoid::Position localT_;
+    cnoid::Isometry3 localT_;
     double pgain_;
     double dgain_;
     double pgainR_;

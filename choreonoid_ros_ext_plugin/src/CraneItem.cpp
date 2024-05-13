@@ -4,6 +4,8 @@
 #include <cnoid/MessageView>
 #include <cnoid/EigenArchive>
 #include <cnoid/EigenUtil>
+#include <cnoid/LazyCaller>
+#include <cnoid/MainWindow>
 
 namespace cnoid {
 
@@ -38,6 +40,15 @@ namespace cnoid {
         free(argv[i]);
       }
     }
+
+    cnoid::callLater([&](){ // コンストラクタ内だとthis->name()が設定されていない
+        this->toolBar_ = new ToolBar((this->name()+"Bar").c_str());
+        this->toolBar_->setVisibleByDefault(true);
+        MainWindow::instance()->addToolBar(this->toolBar_);
+        this->button_ = this->toolBar_->addToggleButton(QIcon(":/Base/icon/adjustsize.svg"));
+        this->button_->setToolTip((this->linkName_+" Crane").c_str());
+        this->button_->sigToggled().connect([&](bool on){ onButtonToggled(on); });
+      });
 
     SimulationBar::instance()->sigSimulationAboutToStart().connect([&](SimulatorItem* simulatorItem){onSimulationAboutToStart(simulatorItem);});
 
@@ -114,8 +125,6 @@ namespace cnoid {
 
   void CraneItem::onSimulationStarted()
   {
-    if(this->liftStart_) this->state_ = UP;
-    else this->state_ = DISABLED;
     if(this->bodyItem_){
       cnoid::LinkPtr link = this->bodyItem_->body()->link(this->linkName_);
       if(link){
@@ -125,7 +134,7 @@ namespace cnoid {
       }
       this->prevError_ = 0.0;
     }
-
+    this->button_->setChecked(this->liftStart_);
     this->currentSimulatorItem_->addPreDynamicsFunction([&](){ onSimulationStep(); });
   }
 
@@ -164,14 +173,14 @@ namespace cnoid {
       cnoid::Vector3 m = - angleAxis.angle()*angleAxis.axis()/dt * this->dgainR_;
 
       if(f[2]>0){
-        link->addExternalForce(f, this->localPos_);
+        link->addExternalForceAtLocalPosition(f, this->localPos_);
 
-        link->addExternalForce( m[0]/2*cnoid::Vector3::UnitZ(), this->localPos_+link->R().transpose()*cnoid::Vector3::UnitY());
-        link->addExternalForce(-m[0]/2*cnoid::Vector3::UnitZ(), this->localPos_-link->R().transpose()*cnoid::Vector3::UnitY());
-        link->addExternalForce( m[1]/2*cnoid::Vector3::UnitX(), this->localPos_+link->R().transpose()*cnoid::Vector3::UnitZ());
-        link->addExternalForce(-m[1]/2*cnoid::Vector3::UnitX(), this->localPos_-link->R().transpose()*cnoid::Vector3::UnitZ());
-        link->addExternalForce( m[2]/2*cnoid::Vector3::UnitY(), this->localPos_+link->R().transpose()*cnoid::Vector3::UnitX());
-        link->addExternalForce(-m[2]/2*cnoid::Vector3::UnitY(), this->localPos_-link->R().transpose()*cnoid::Vector3::UnitX());
+        link->addExternalForceAtLocalPosition( m[0]/2*cnoid::Vector3::UnitZ(), this->localPos_+link->R().transpose()*cnoid::Vector3::UnitY());
+        link->addExternalForceAtLocalPosition(-m[0]/2*cnoid::Vector3::UnitZ(), this->localPos_-link->R().transpose()*cnoid::Vector3::UnitY());
+        link->addExternalForceAtLocalPosition( m[1]/2*cnoid::Vector3::UnitX(), this->localPos_+link->R().transpose()*cnoid::Vector3::UnitZ());
+        link->addExternalForceAtLocalPosition(-m[1]/2*cnoid::Vector3::UnitX(), this->localPos_-link->R().transpose()*cnoid::Vector3::UnitZ());
+        link->addExternalForceAtLocalPosition( m[2]/2*cnoid::Vector3::UnitY(), this->localPos_+link->R().transpose()*cnoid::Vector3::UnitX());
+        link->addExternalForceAtLocalPosition(-m[2]/2*cnoid::Vector3::UnitY(), this->localPos_-link->R().transpose()*cnoid::Vector3::UnitX());
 
       }
     }else{
@@ -183,7 +192,13 @@ namespace cnoid {
   }
 
   bool CraneItem::onLiftSrv(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res){
-    if(req.data) {
+    this->button_->setChecked(req.data);
+    res.success = true;
+    return true;
+  }
+
+  void CraneItem::onButtonToggled(bool on){
+    if(on) {
       switch(this->state_){
       case DISABLED:
         this->state_ = UP;
@@ -204,8 +219,7 @@ namespace cnoid {
         break;
       }
     }
-    res.success = true;
-    return true;
   }
+
 }
 

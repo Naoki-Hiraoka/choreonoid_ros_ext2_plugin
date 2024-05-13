@@ -10,6 +10,7 @@
 #include <cnoid/SimulatorItem>
 #include <cnoid/ConnectionSet>
 #include <cnoid/Archive>
+#include <cnoid/ToolBar>
 #include <std_srvs/SetBool.h>
 
 namespace cnoid {
@@ -32,6 +33,10 @@ namespace cnoid {
     void onSimulationStarted();
     void onSimulationStep();
     bool onLiftSrv(std_srvs::SetBool::Request& req, std_srvs::SetBool::Response& res);
+    void onButtonToggled(bool on);
+
+    cnoid::ToolBar* toolBar_;
+    cnoid::ToolButton* button_;
 
     BodyItemPtr bodyItem_;
     SimulatorItem* currentSimulatorItem_;
@@ -42,7 +47,7 @@ namespace cnoid {
     double targetHeight_;
     double prevError_=0;
     enum state {UP, DOWN, DISABLED};
-    state state_;
+    state state_ = DISABLED;
     int frame_=0;
     cnoid::Vector3 prevp_;
     cnoid::Matrix3 prevR_;

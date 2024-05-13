@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>choreonoid_ros_ext_plugin</name>
-  <version>0.0.0</version>
+  <version>1.0.0</version>
   <description>The choreonoid_ros_ext_plugin package</description>
 
   <maintainer email="hiraoka@jsk.imi.i.u-tokyo.ac.jp">Naoki-Hiraoka</maintainer>

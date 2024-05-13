@@ -18,6 +18,7 @@ items:
           name: "SR1"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/SR1/SR1.body"
             currentBaseLink: "WAIST"
@@ -47,24 +48,23 @@ items:
           children:
             -
               id: 3
-              name: "Crane"
+              name: "PositionDragger"
               plugin: ROSExt
-              class: CraneItem
+              class: PositionDraggerItem
               data:
                 linkName: "CHEST"
-                localPos: [0,0,0]
-                maxHeight: 1.7
-                minHeight: 0.5
-                upVelocity: 0.1
-                downVelocity: 0.03
+                localp: [0,0,0]
+                localR: [1,0,0,0]
                 pgain: 25000.0
                 dgain: 100.0
+                pgainR: 100.0
                 dgainR: 100.0
         - 
           id: 4
           name: "Floor"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/misc/floor.body"
             currentBaseLink: "BASE"
@@ -90,19 +90,3 @@ items:
           data: 
             realtimeSync: true
             recording: "full"
-views: 
-  "Items": 
-    selected: [  ]
-    checked: [ 2, 4 ]
-    expanded: [ 1, 2, 3 ]
-  "Scene": 
-    floorGrid: false
-toolbars: 
-  "TimeBar": 
-    minTime: 0
-    maxTime: 15
-    frameRate: 500
-    currentTime: 0
-    speedScale: 1
-    syncToOngoingUpdates: true
-    autoExpansion: true

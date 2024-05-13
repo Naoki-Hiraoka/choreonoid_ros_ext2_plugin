@@ -17,6 +17,7 @@ items:
           name: "SpringModel"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/misc/SpringModel.body"
             currentBaseLink: "LOWER"
@@ -50,6 +51,7 @@ items:
           name: "Floor"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/misc/floor.body"
             currentBaseLink: "BASE"
@@ -89,20 +91,3 @@ items:
             contactCorrectionVelocityRatio: 10
             2Dmode: false
             controllerThreads: false # choreonoid1.7では、falseにしないとControllerItemのisNoDelayMode: trueが無効になる
-
-views: 
-  "Items": 
-    selected: [  ]
-    checked: [ 2, 4 ]
-    expanded: [ 1, 2, 3 ]
-  "Scene": 
-    floorGrid: false
-toolbars: 
-  "TimeBar": 
-    minTime: 0
-    maxTime: 15
-    frameRate: 500
-    currentTime: 0
-    speedScale: 1
-    syncToOngoingUpdates: true
-    autoExpansion: true

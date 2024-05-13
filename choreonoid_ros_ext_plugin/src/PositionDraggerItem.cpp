@@ -2,11 +2,14 @@
 #include <cnoid/ItemManager>
 #include <cnoid/MessageView>
 #include <cnoid/EigenArchive>
+#include <cnoid/SceneWidget>
 #include <cnoid/SimulatorItem>
 #include <cnoid/EigenUtil>
 #include <cnoid/SceneView>
 #include <cnoid/LazyCaller>
 #include <cnoid/MainWindow>
+
+#include <iostream>
 
 namespace cnoid {
 
@@ -16,8 +19,8 @@ namespace cnoid {
   }
 
   PositionDraggerItem::PositionDraggerItem() {
-    positionDragger_ = new PositionDragger;
-    positionDragger_->setDraggerAlwaysShown(true);
+    positionDragger_ = new PositionDragger(cnoid::PositionDragger::AllAxes, cnoid::PositionDragger::WideHandle);
+    positionDragger_->setDisplayMode(cnoid::PositionDragger::DisplayAlways);
     positionDragger_->sigPositionDragged().connect(std::bind(&PositionDraggerItem::onDraggerDragged, this));
     SceneView::instance()->sceneWidget()->sceneRoot()->addChild(this->positionDragger_);
 
@@ -25,7 +28,8 @@ namespace cnoid {
         this->toolBar_ = new ToolBar((this->name()+"Bar").c_str());
         this->toolBar_->setVisibleByDefault(true);
         MainWindow::instance()->addToolBar(this->toolBar_);
-        this->button_ = this->toolBar_->addToggleButton(QIcon(":/Base/icons/walkthrough.png"),this->linkName_.c_str());
+        this->button_ = this->toolBar_->addToggleButton(QIcon(":/Base/icon/adjustsize.svg"));
+        this->button_->setToolTip(this->linkName_.c_str());
         this->button_->sigToggled().connect([&](bool on){ onButtonToggled(on); });
       });
 
@@ -40,7 +44,7 @@ namespace cnoid {
   bool PositionDraggerItem::store(Archive& archive) {
     archive.write("linkName", this->linkName_);
     write(archive,"localp", this->localT_.translation());
-    write(archive,"localR", cnoid::AngleAxis(this->localT_.linear()));
+    writeRadianAngleAxis(&archive,"localR", cnoid::AngleAxis(this->localT_.linear()));
     archive.write("pgain", this->pgain_);
     archive.write("dgain", this->dgain_);
     archive.write("pgainR", this->pgainR_);
@@ -55,7 +59,7 @@ namespace cnoid {
     read(archive,"localp", p);
     this->localT_.translation() = p;
     cnoid::AngleAxis angleAxis;
-    read(archive,"localR", angleAxis);
+    readRadianAngleAxis(archive,"localR", angleAxis);
     this->localT_.linear() = cnoid::Matrix3(angleAxis);
     archive.read("pgain", this->pgain_);
     archive.read("dgain", this->dgain_);
@@ -71,8 +75,8 @@ namespace cnoid {
         if(link){
           this->targetT_ = link->T() * this->localT_;
           this->prevError_ = cnoid::Vector6::Zero();
-          this->positionDragger_->setRadius(0.2);
-          this->positionDragger_->setDraggerAlwaysShown(true);
+          this->positionDragger_->setHandleSize(0.4);
+          this->positionDragger_->setDisplayMode(cnoid::PositionDragger::DisplayAlways);
           this->positionDragger_->T() = this->targetT_;
           state_ = ENABLED;
         }else{
@@ -80,15 +84,15 @@ namespace cnoid {
         }
       }
     }else{
-      this->positionDragger_->setDraggerAlwaysHidden(true);
+      this->positionDragger_->setDisplayMode(cnoid::PositionDragger::DisplayNever);
       state_ = DISABLED;
     }
   }
 
   void PositionDraggerItem::onDraggerDragged() {
     SimulatorItem* activeSimulatorItem = SimulatorItem::findActiveSimulatorItemFor(bodyItem_);
-    this->targetT_ = this->positionDragger_->draggedPosition();
-    this->positionDragger_->T() = this->positionDragger_->draggedPosition();
+    this->targetT_ = this->positionDragger_->globalDraggingPosition();
+    this->positionDragger_->T() = this->positionDragger_->globalDraggingPosition();
   }
 
   void PositionDraggerItem::onSimulationAboutToStart(SimulatorItem* simulatorItem)
@@ -118,7 +122,7 @@ namespace cnoid {
     cnoid::LinkPtr link = simBody->body()->link(this->linkName_);
     if(!link) return;
 
-    cnoid::Position currentT = link->T() * this->localT_;
+    cnoid::Isometry3 currentT = link->T() * this->localT_;
 
     cnoid::Vector6 error;
     error.head<3>() = currentT.translation() - this->targetT_.translation();
@@ -131,7 +135,7 @@ namespace cnoid {
     cnoid::Vector3 f = - error.head<3>() * this->pgain_ - dError.head<3>() * this->dgain_;
     cnoid::Vector3 m = - error.tail<3>() * this->pgainR_ - dError.tail<3>() * this->dgainR_;
 
-    link->addExternalForce(f, this->localT_.translation());
+    link->addExternalForceAtLocalPosition(f, this->localT_.translation());
     link->tau_ext() += m;
   }
 

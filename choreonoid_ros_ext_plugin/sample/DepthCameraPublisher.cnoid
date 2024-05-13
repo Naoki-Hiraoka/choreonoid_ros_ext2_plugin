@@ -19,6 +19,7 @@ items:
           name: "Tank"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/Tank/Tank.body"
             currentBaseLink: ""
@@ -51,6 +52,7 @@ items:
           name: "Floor"
           plugin: Body
           class: BodyItem
+          is_checked: true
           data: 
             modelFile: "${SHARE}/model/misc/floor.body"
             currentBaseLink: "BASE"
@@ -98,10 +100,3 @@ items:
                 enableHeadLight: true
                 enableAdditionalLights: true
                 antiAliasing: false
-views: 
-  "Items": 
-    selected: [  ]
-    checked: [ 2, 4 ]
-    expanded: [ 1, 2, 5 ]
-  "Scene": 
-    floorGrid: false

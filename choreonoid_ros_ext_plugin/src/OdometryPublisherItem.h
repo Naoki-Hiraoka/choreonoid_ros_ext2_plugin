@@ -18,7 +18,7 @@ namespace cnoid {
     virtual bool start() override;
 
     virtual double timeStep() const override { return timeStep_;};
-    virtual void input() override {}
+    virtual void input() override;
     virtual bool control() override;
     virtual void output() override {}
     virtual void stop() override {}
@@ -46,6 +46,9 @@ namespace cnoid {
     cnoid::Isometry3 prevPose_ = cnoid::Isometry3::Identity();
 
     double time_ = 0.0;
+
+     // input()で取得し、control()で使用される
+    cnoid::Isometry3 pose_;
   };
 
   typedef ref_ptr<OdometryPublisherItem> OdometryPublisherItemPtr;

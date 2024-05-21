@@ -71,6 +71,20 @@ namespace cnoid {
     }
   }
 
+  void OdometryPublisherItem::input() {
+    if(!this->link_ && !this->sensor_) return;
+    if(this->link_){
+      this->pose_ = this->link_->T();
+    }else{
+      this->pose_ = this->sensor_->link()->T() * this->sensor_->T_local();
+      // Rotate sensor->localR 180[deg] because OpenHRP3 camera -Z axis equals to ROS camera Z axis
+      // http://www.openrtp.jp/openhrp3/jp/create_model.html
+      this->pose_.linear() = (this->pose_.linear() * cnoid::AngleAxis(M_PI, cnoid::Vector3::UnitX())).eval();
+    }
+  }
+
+  // The body oject given in the initalized function() must not be accessed
+  // in this function. The access should be done in input() and output().
   bool OdometryPublisherItem::control() {
     if(!this->link_ && !this->sensor_) return true;
 
@@ -91,15 +105,8 @@ namespace cnoid {
       if(this->childFrameId_.size()!=0) odom.child_frame_id = this->childFrameId_;
       else odom.child_frame_id = this->targetName_;
 
-      cnoid::Isometry3 pose;
-      if(this->link_){
-        pose = this->link_->T();
-      }else{
-        pose = this->sensor_->link()->T() * this->sensor_->T_local();
-        // Rotate sensor->localR 180[deg] because OpenHRP3 camera -Z axis equals to ROS camera Z axis
-        // http://www.openrtp.jp/openhrp3/jp/create_model.html
-        pose.linear() = (pose.linear() * cnoid::AngleAxis(M_PI, cnoid::Vector3::UnitX())).eval();
-      }
+      cnoid::Isometry3 pose = this->pose_;
+
       odom.pose.pose.position.x = pose.translation()[0];
       odom.pose.pose.position.y = pose.translation()[1];
       odom.pose.pose.position.z = pose.translation()[2];

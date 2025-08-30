@@ -11,6 +11,7 @@
 #include "OdometryPublisherItem.h"
 #include "SimulatorWorldResetItem.h"
 #include "PositionDraggerItem.h"
+#include "PositionSteeringItem.h"
 
 using namespace cnoid;
 
@@ -34,6 +35,7 @@ public:
       OdometryPublisherItem::initializeClass(this);
       SimulatorWorldResetItem::initializeClass(this);
       PositionDraggerItem::initializeClass(this);
+      PositionSteeringItem::initializeClass(this);
       return true;
     }
 

@@ -26,6 +26,9 @@ linkやcameraの現在地と速度をnav_msgs/Odometryでpublish. (Ground Truth�
 ## PositionDraggerItem
 (ROSとは関係ない). GUIからマウスで位置姿勢を指定すると、リンクに力を作用させてその位置に固定できる. ツールバーのボタンからオンオフを切り替えられる。
 
+## PositionSteeringItem
+`アイテム名/cmd_vel`に`geometry_msgs/Twist`トピックを送ると、リンクに力を作用させてその速度で動かせる. 常にオン.
+
 # SimpleController
 
 ## SpringDamplerController

@@ -29,6 +29,7 @@ add_library(CnoidROSExtPlugin SHARED
   src/OdometryPublisherItem.cpp
   src/SimulatorWorldResetItem.cpp
   src/PositionDraggerItem.cpp
+  src/PositionSteeringItem.cpp
   )
 target_link_libraries(CnoidROSExtPlugin
   ${catkin_LIBRARIES}

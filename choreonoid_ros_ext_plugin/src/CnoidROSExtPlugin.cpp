@@ -12,6 +12,7 @@
 #include "SimulatorWorldResetItem.h"
 #include "PositionDraggerItem.h"
 #include "PositionSteeringItem.h"
+#include "ObjectStatePublisherItem.h"
 
 using namespace cnoid;
 
@@ -36,6 +37,7 @@ public:
       SimulatorWorldResetItem::initializeClass(this);
       PositionDraggerItem::initializeClass(this);
       PositionSteeringItem::initializeClass(this);
+      ObjectStatePublisherItem::initializeClass(this);
       return true;
     }
 

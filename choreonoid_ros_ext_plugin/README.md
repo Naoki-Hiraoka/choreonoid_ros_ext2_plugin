@@ -29,6 +29,9 @@ linkやcameraの現在地と速度をnav_msgs/Odometryでpublish. (Ground Truth�
 ## PositionSteeringItem
 `アイテム名/cmd_vel`に`geometry_msgs/Twist`トピックを送ると、リンクに力を作用させてその速度で動かせる. 常にオン.
 
+## ObjectStatePublisherItem
+BodyのrootLinkの位置姿勢をnav_msgs/Odometryに、Jointの角度をsensor_msgs/JointStateにpublishする.
+
 # SimpleController
 
 ## SpringDamplerController

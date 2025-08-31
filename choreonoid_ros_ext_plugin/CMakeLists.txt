@@ -30,6 +30,7 @@ add_library(CnoidROSExtPlugin SHARED
   src/SimulatorWorldResetItem.cpp
   src/PositionDraggerItem.cpp
   src/PositionSteeringItem.cpp
+  src/ObjectStatePublisherItem.cpp
   )
 target_link_libraries(CnoidROSExtPlugin
   ${catkin_LIBRARIES}

@@ -33,7 +33,7 @@ namespace cnoid {
         }
         argv[i][dataSize] = '\0';
       }
-      ros::init(argc,argv,"choreonoid");
+      ros::init(argc,argv,"choreonoid", ros::init_options::NoSigintHandler/*ctrl-Cで終了するように*/);
       for(size_t i=0;i<argc;i++){
         free(argv[i]);
       }

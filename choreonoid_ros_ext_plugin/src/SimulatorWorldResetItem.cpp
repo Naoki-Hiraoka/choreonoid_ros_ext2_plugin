@@ -4,6 +4,7 @@
 #include <cnoid/MessageView>
 #include <cnoid/EigenArchive>
 #include <cnoid/EigenUtil>
+#include <eigen_conversions/eigen_msg.h>
 
 namespace cnoid {
 
@@ -50,7 +51,8 @@ namespace cnoid {
     ros::NodeHandle nh;
     nh.setCallbackQueue(&(this->callbackQueue_));
     this->spinner_ = std::make_shared<ros::AsyncSpinner>(1,&(this->callbackQueue_));
-    this->ResetSrv_ = nh.advertiseService(this->name()+"/Reset",&SimulatorWorldResetItem::onResetSrv,this);
+    this->resetSrv_ = nh.advertiseService(this->name()+"/Reset",&SimulatorWorldResetItem::onResetSrv,this);
+    this->setModelStateSrv_ = nh.advertiseService(this->name()+"/SetModelState",&SimulatorWorldResetItem::onSetModelStateSrv,this);
     this->spinner_->start();
   }
 
@@ -84,6 +86,7 @@ namespace cnoid {
     if(this->currentSimulatorItem_ && this->resetStep_>0){
       this->resetStep_--;
 
+      // 動かない TODO
       const std::vector<SimulationBody*>& bodies = this->currentSimulatorItem_->simulationBodies();
       for(int i=0;i<bodies.size();i++){
         //bodies[i]->body()->initializePosition();
@@ -95,6 +98,11 @@ namespace cnoid {
         bodies[i]->body()->initializeState();
       }
     }
+
+    if(this->currentSimulatorItem_ && this->setModelStateStep_>0){
+      this->currentSimulatorItem_->clearForcedPositions();
+      this->setModelStateStep_--;
+    }
   }
 
 
@@ -103,5 +111,23 @@ namespace cnoid {
     res.success = true;
     return true;
   }
+
+  bool SimulatorWorldResetItem::onSetModelStateSrv(gazebo_msgs::SetModelState::Request& req, gazebo_msgs::SetModelState::Response& res) {
+    std::string bodyName = req.model_state.model_name;
+    cnoid::Isometry3 pose;
+    tf::poseMsgToEigen(req.model_state.pose, pose);
+
+    SimulationBody* body = (this->currentSimulatorItem_) ? this->currentSimulatorItem_->findSimulationBody(bodyName) : nullptr;
+    if(body){
+      this->currentSimulatorItem_->setForcedPosition(body->bodyItem(), pose);
+      setModelStateStep_= 1;
+      res.success = true;
+      return true;
+    }else{
+      res.success = false;
+      return true;
+    }
+  }
+
 }
 

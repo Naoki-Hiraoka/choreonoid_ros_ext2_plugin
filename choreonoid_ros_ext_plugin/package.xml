@@ -16,6 +16,8 @@
  <depend>sensor_msgs</depend>
  <depend>image_transport</depend>
  <depend>nav_msgs</depend>
+ <depend>gazebo_msgs</depend>
  <depend>geometry_msgs</depend>
+ <depend>eigen_conversions</depend>
 
 </package>

@@ -11,6 +11,7 @@
 #include <cnoid/ConnectionSet>
 #include <cnoid/Archive>
 #include <std_srvs/Trigger.h>
+#include <gazebo_msgs/SetModelState.h>
 
 namespace cnoid {
 
@@ -32,14 +33,17 @@ namespace cnoid {
     void onSimulationStep();
 
     bool onResetSrv(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res);
+    bool onSetModelStateSrv(gazebo_msgs::SetModelState::Request& req, gazebo_msgs::SetModelState::Response& res);
 
     SimulatorItem* currentSimulatorItem_;
     ScopedConnectionSet currentSimulatorItemConnections_;
-    ros::ServiceServer ResetSrv_;
+    ros::ServiceServer resetSrv_;
+    ros::ServiceServer setModelStateSrv_;
     ros::CallbackQueue callbackQueue_;
     std::shared_ptr<ros::AsyncSpinner> spinner_;
 
     int resetStep_=0;
+    int setModelStateStep_=0;
   };
 
   typedef ref_ptr<SimulatorWorldResetItem> SimulatorWorldResetItemPtr;

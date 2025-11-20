@@ -4,7 +4,14 @@ project(choreonoid_ros_ext_plugin)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Release)
 
-find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs image_transport nav_msgs)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  sensor_msgs
+  image_transport
+  nav_msgs
+  gazebo_msgs
+  eigen_conversions
+  )
 find_package(choreonoid REQUIRED)
 
 catkin_package()

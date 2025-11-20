@@ -23,6 +23,8 @@ linkやcameraの現在地と速度をnav_msgs/Odometryでpublish. (Ground Truth�
 ## SimulatorWorldResetItem
 シミュレータ内の全Bodyを初期状態にリセットする. `<name>/Reset`に`std_srvs/Trigger`サービスを送るとリセットできる.`SimulatorItem::startSimulation`との差異は、時計がリセットされない点.
 
+シミュレータ内の指定したBodyのrootLinkを指定位置姿勢にワープさせる. `<name>/SetModelState`に`gazebo_msgs/SetModelState`サービスを送ると使用できる.
+
 ## PositionDraggerItem
 (ROSとは関係ない). GUIからマウスで位置姿勢を指定すると、リンクに力を作用させてその位置に固定できる. ツールバーのボタンからオンオフを切り替えられる。
 

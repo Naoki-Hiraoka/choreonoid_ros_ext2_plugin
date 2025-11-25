@@ -34,7 +34,7 @@ add_library(CnoidROSExtPlugin SHARED
   src/DepthCameraPublisherItem.cpp
   src/OdometryCameraPublisherItem.cpp
   src/OdometryPublisherItem.cpp
-  src/SimulatorWorldResetItem.cpp
+  src/SimulatorWorldItem.cpp
   src/PositionDraggerItem.cpp
   src/PositionSteeringItem.cpp
   src/ObjectStatePublisherItem.cpp

@@ -1,4 +1,4 @@
-#include "SimulatorWorldResetItem.h"
+#include "SimulatorWorldItem.h"
 #include <QCoreApplication>
 #include <cnoid/ItemManager>
 #include <cnoid/MessageView>
@@ -9,12 +9,12 @@
 
 namespace cnoid {
 
-  void SimulatorWorldResetItem::initializeClass(ExtensionManager* ext)
+  void SimulatorWorldItem::initializeClass(ExtensionManager* ext)
   {
-    ext->itemManager().registerClass<SimulatorWorldResetItem>("SimulatorWorldResetItem");
+    ext->itemManager().registerClass<SimulatorWorldItem>("SimulatorWorldItem");
   }
 
-  SimulatorWorldResetItem::SimulatorWorldResetItem() {
+  SimulatorWorldItem::SimulatorWorldItem() {
     if(!ros::isInitialized()){
       QStringList argv_list = QCoreApplication::arguments();
       int argc = argv_list.size();
@@ -44,7 +44,7 @@ namespace cnoid {
     SimulationBar::instance()->sigSimulationAboutToStart().connect([&](SimulatorItem* simulatorItem){onSimulationAboutToStart(simulatorItem);});
   }
 
-  void SimulatorWorldResetItem::setupROS() {
+  void SimulatorWorldItem::setupROS() {
     if(this->setupROSDone_) return;
     this->setupROSDone_ = true;
 
@@ -52,20 +52,20 @@ namespace cnoid {
     ros::NodeHandle nh;
     nh.setCallbackQueue(&(this->callbackQueue_));
     this->spinner_ = std::make_shared<ros::AsyncSpinner>(1,&(this->callbackQueue_));
-    this->resetSrv_ = nh.advertiseService(this->name()+"/Reset",&SimulatorWorldResetItem::onResetSrv,this);
-    this->setModelStateSrv_ = nh.advertiseService(this->name()+"/SetModelState",&SimulatorWorldResetItem::onSetModelStateSrv,this);
+    this->resetSrv_ = nh.advertiseService(this->name()+"/Reset",&SimulatorWorldItem::onResetSrv,this);
+    this->setModelStateSrv_ = nh.advertiseService(this->name()+"/SetModelState",&SimulatorWorldItem::onSetModelStateSrv,this);
     this->spinner_->start();
   }
 
-  bool SimulatorWorldResetItem::store(Archive& archive) {
+  bool SimulatorWorldItem::store(Archive& archive) {
     return true;
   }
 
-  bool SimulatorWorldResetItem::restore(const Archive& archive) {
+  bool SimulatorWorldItem::restore(const Archive& archive) {
     return true;
   }
 
-  void SimulatorWorldResetItem::onSimulationAboutToStart(SimulatorItem* simulatorItem)
+  void SimulatorWorldItem::onSimulationAboutToStart(SimulatorItem* simulatorItem)
   {
     this->currentSimulatorItem_ = simulatorItem;
 
@@ -76,13 +76,13 @@ namespace cnoid {
     setupROS(); // コンストラクタやcallLaterだとname()やrestore()が未完了
   }
 
-  void SimulatorWorldResetItem::onSimulationStarted()
+  void SimulatorWorldItem::onSimulationStarted()
   {
     this->resetStep_ = 0;
     this->currentSimulatorItem_->addPostDynamicsFunction([&](){ onSimulationStep(); });
   }
 
-  void SimulatorWorldResetItem::onSimulationStep()
+  void SimulatorWorldItem::onSimulationStep()
   {
     if(this->currentSimulatorItem_ && this->resetStep_>0){
       this->resetStep_--;
@@ -113,13 +113,13 @@ namespace cnoid {
   }
 
 
-  bool SimulatorWorldResetItem::onResetSrv(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res){
+  bool SimulatorWorldItem::onResetSrv(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res){
     this->resetStep_ = 1;
     res.success = true;
     return true;
   }
 
-  bool SimulatorWorldResetItem::onSetModelStateSrv(gazebo_msgs::SetModelState::Request& req, gazebo_msgs::SetModelState::Response& res) {
+  bool SimulatorWorldItem::onSetModelStateSrv(gazebo_msgs::SetModelState::Request& req, gazebo_msgs::SetModelState::Response& res) {
     std::string bodyName = req.model_state.model_name;
     cnoid::Isometry3 pose;
     tf::poseMsgToEigen(req.model_state.pose, pose);

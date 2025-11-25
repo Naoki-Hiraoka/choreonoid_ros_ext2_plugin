@@ -1,5 +1,5 @@
-#ifndef CNOIDROSEXTPLUGIN_SIMULATORWORLDRESET_ITEM_H
-#define CNOIDROSEXTPLUGIN_SIMULATORWORLDRESET_ITEM_H
+#ifndef CNOIDROSEXTPLUGIN_SIMULATORWORLDITEM_H
+#define CNOIDROSEXTPLUGIN_SIMULATORWORLDITEM_H
 
 #include <cnoid/Item>
 #include <ros/ros.h>
@@ -15,12 +15,12 @@
 
 namespace cnoid {
 
-  class SimulatorWorldResetItem : public Item
+  class SimulatorWorldItem : public Item
   {
   public:
     static void initializeClass(ExtensionManager* ext);
 
-    SimulatorWorldResetItem();
+    SimulatorWorldItem();
 
   protected:
     virtual bool store(Archive& archive) override;
@@ -46,7 +46,7 @@ namespace cnoid {
     int setModelStateStep_=0;
   };
 
-  typedef ref_ptr<SimulatorWorldResetItem> SimulatorWorldResetItemPtr;
+  typedef ref_ptr<SimulatorWorldItem> SimulatorWorldItemPtr;
 }
 
 #endif

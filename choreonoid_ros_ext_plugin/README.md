@@ -20,7 +20,7 @@ linkやcameraの現在地と速度をnav_msgs/Odometryでpublish. (Ground Truth�
 ## CraneItem
 ロボットを吊るすクレーン. `<name>/Lift`に`std_srvs/SetBool`サービスを送るとクレーンをオン, オフできる.
 
-## SimulatorWorldResetItem
+## SimulatorWorldItem
 シミュレータ内の全Bodyを初期状態にリセットする. `<name>/Reset`に`std_srvs/Trigger`サービスを送るとリセットできる.`SimulatorItem::startSimulation`との差異は、時計がリセットされない点.
 
 シミュレータ内の指定したBodyのrootLinkを指定位置姿勢にワープさせる. `<name>/SetModelState`に`gazebo_msgs/SetModelState`サービスを送ると使用できる.

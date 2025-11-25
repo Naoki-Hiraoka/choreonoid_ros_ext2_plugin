@@ -4,6 +4,7 @@
 #include <cnoid/MessageView>
 #include <cnoid/EigenArchive>
 #include <cnoid/EigenUtil>
+#include <cnoid/DyBody>
 #include <eigen_conversions/eigen_msg.h>
 
 namespace cnoid {
@@ -86,7 +87,6 @@ namespace cnoid {
     if(this->currentSimulatorItem_ && this->resetStep_>0){
       this->resetStep_--;
 
-      // 動かない TODO
       const std::vector<SimulationBody*>& bodies = this->currentSimulatorItem_->simulationBodies();
       for(int i=0;i<bodies.size();i++){
         //bodies[i]->body()->initializePosition();
@@ -96,6 +96,13 @@ namespace cnoid {
           bodies[i]->body()->joint(j)->q() = bodies[i]->bodyItem()->body()->joint(j)->q();
         }
         bodies[i]->body()->initializeState();
+
+        // AISTSimulatorのForwardDynamicsABMは、calcABMFirstHalf()を前回周期の値を用いて既に行っているため、body()->initializeState()した状態で残りのcalcABMLastHalf()を行うと整合性がとれずnanになったり吹っ飛んだりする. dd()に大きな値をセットするととりあえずまともに動く.
+        for(int l=0;l<bodies[i]->body()->numLinks();l++){
+          cnoid::LinkPtr link = bodies[i]->body()->link(l);
+          cnoid::DyLinkPtr dyLink = cnoid::dynamic_pointer_cast<cnoid::DyLink>(link);
+          if(dyLink) dyLink->dd() = 1e10;
+        }
       }
     }
 

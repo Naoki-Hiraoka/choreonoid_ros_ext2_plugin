@@ -107,8 +107,10 @@ namespace cnoid {
     }
 
     if(this->currentSimulatorItem_ && this->setModelStateStep_>0){
-      this->currentSimulatorItem_->clearForcedPositions();
       this->setModelStateStep_--;
+      if(this->setModelStateStep_ == 0){
+        this->currentSimulatorItem_->clearForcedPositions();
+      }
     }
   }
 
@@ -127,7 +129,7 @@ namespace cnoid {
     SimulationBody* body = (this->currentSimulatorItem_) ? this->currentSimulatorItem_->findSimulationBody(bodyName) : nullptr;
     if(body){
       this->currentSimulatorItem_->setForcedPosition(body->bodyItem(), pose);
-      setModelStateStep_= 1;
+      setModelStateStep_= 2; // postDynamicsの直前に呼ばれた場合に機能しないので2loop回す
       res.success = true;
       return true;
     }else{
